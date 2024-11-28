@@ -6,24 +6,23 @@ import numpy as np
 import os
 
 app = Flask(__name__)
+import gdown
 
-def load_model_from_url(url, local_path):
-    if not os.path.exists(local_path):
-        print("Downloading model...")
-        response = requests.get(url, stream=True)
-        if response.status_code == 200:
-            with open(local_path, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
-        else:
-            raise Exception(f"Failed to download file. Status code: {response.status_code}")
-    return load_model(local_path)
-
-# Use the modified Google Drive link
-model_url = "https://drive.google.com/uc?id=1z9kbfDnT64-TzM6Dx-IUjUcuY91cXk3L&export=download"
+file_id = "1z9kbfDnT64-TzM6Dx-IUjUcuY91cXk3L"
 model_path = "model.h5"
 
-model = load_model_from_url(model_url, model_path)
+# Construct the download URL
+url = f"https://drive.google.com/uc?id={file_id}"
+
+# Download the file
+gdown.download(url, model_path, quiet=False)
+
+# Load the model
+from tensorflow.keras.models import load_model
+model = load_model(model_path)
+print("Model loaded successfully.")
+
+
 # Load your trained model
 #model = load_model('trained_plant_disease_model.keras')
 
